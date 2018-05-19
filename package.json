@@ -1,12 +1,15 @@
 {
+  "name": "smartconsuption",
+  "version": "1.0.0",
+  "description": "it's a RESTFul API for an app ",
   "dependencies": {
     "express": "^4.16.3",
     "nodemon": "^1.17.4",
     "pino": "^4.16.1"
   },
-  "name": "smartconsuption",
-  "version": "1.0.0",
-  "description": "it's a RESTFul API for an app ",
+  "scripts": {
+    "dev" :"nodemon ./app.js localhost 3000"
+  },
   "main": "app.js",
   "author": "rokity <riccardo.amadio1@gmail.com>",
   "license": "MIT",

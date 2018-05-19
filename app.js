@@ -4,4 +4,6 @@ const app = express()
 var log = require('pino')()
 app.get('/', (req, res) => res.send('Hello World!'))
 
-app.listen(3000, () => log.info('Example app listening on port 3000!'))
+var hostname = process.argv[2];
+var port = process.argv[3];
+app.listen(port,hostname, () => log.error(`Example app listening on ${hostname}:${port}!`))
