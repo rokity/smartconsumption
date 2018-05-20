@@ -13,7 +13,8 @@
     "vision": "^5.3.2"
   },
   "scripts": {
-    "dev": "nodemon ./app.js localhost 3000"
+    "dev": "nodemon ./app.js localhost 3000",
+    "start": "nodemon ./app.js 0.0.0.0 80"
   },
   "main": "app.js",
   "author": "rokity <riccardo.amadio1@gmail.com>",
