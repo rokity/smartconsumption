@@ -13,18 +13,22 @@ const server = Hapi.server({
     port: _port,
     host: _hostname
 });
-
+var mongoose = require( 'mongoose' );
 server.route({
     method: 'GET',
     path: '/',
-    handler: (request, h) => {
-
-        return 'Hello, world!';
+    handler: async (request, h) => {
+       var Procedura = mongoose.model('Procedura'); 
+       var newProcedura = new Procedura({Name:'Test',TipoProcedura:2,CreatedOn:Date.now(),Modified:Date.now(),Disabled:false});
+       var prom = newProcedura.save();
+       return  prom;
     }
 });
 
 //Inizializza il web-server Hapi
 const init = async () => {
+    //Before connect to the Database
+    require('./connection')(log);
     //Add Plugin of Hapi 
     await server.register([require('vision'),require('inert'),require('lout')]);
     //Let's start the webserver

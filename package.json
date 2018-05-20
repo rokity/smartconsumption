@@ -4,7 +4,6 @@
   "description": "it's a RESTFul API for an app ",
   "dependencies": {
     "await": "^0.2.6",
-    "chalk": "^2.4.1",
     "hapi": "^17.4.0",
     "inert": "^5.1.0",
     "lout": "^11.0.1",
