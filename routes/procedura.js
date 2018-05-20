@@ -5,14 +5,16 @@ const Boom = require('boom');
 
 module.exports = [
   {
-    method: 'GET',
-    path: '/api/procedura/insert/{name}/{TipoProcedura}',
+    method: 'POST',
+    path: '/api/procedura/insert',
     handler: (req, h) => {
       h.type = 'application/json';
       const Procedura = mongoose.model('Procedura');
       const newProcedura = new Procedura({
-        Name: req.params.name,
-        TipoProcedura: req.params.TipoProcedura,
+        Name: req.payload.Name,
+        Path : req.payload.Path,
+        HttpMethod: req.payload.HttpMethod,        
+        Parameters: req.payload.Parameters,
         CreatedOn: Date.now(),
         Modified: Date.now(),
         Disabled: false,
@@ -21,23 +23,27 @@ module.exports = [
     },
     options: {
       validate: {
-        params: {
-          name: Joi.string().min(3).required(),
-          TipoProcedura: Joi.number().required(),
+        payload: {
+          Name: Joi.string().min(3).required(),
+          Path: Joi.string().required(),
+          HttpMethod: Joi.string().min(3).max(7).required(),
+          Parameters : Joi.string()
         },
       },
     },
   },
   {
-    method: 'GET',
-    path: '/api/procedura/update/{id}/{name}/{TipoProcedura}',
+    method: 'POST',
+    path: '/api/procedura/update',
     handler: (req, h) => new Promise((resolve, reject) => {
       const Procedura = mongoose.model('Procedura');
       Procedura.findOneAndUpdate(
-        { _id: req.params.id },
+        { _id: req.payload.id },
         {
-          Name: req.params.name,
-          TipoProcedura: req.params.TipoProcedura,
+          Name: req.payload.Name,
+          Path : req.payload.Path,
+          HttpMethod: req.payload.HttpMethod,        
+          Parameters: req.payload.Parameters,
           Modified: Date.now(),
         }, (err) => {
           if (err) { reject(); } else { resolve(); }
@@ -49,10 +55,12 @@ module.exports = [
       }),
     options: {
       validate: {
-        params: {
+        payload: {
           id: Joi.string().required(),
-          name: Joi.string().min(3),
-          TipoProcedura: Joi.number(),
+          Name: Joi.string().min(3),
+          Path: Joi.string(),
+          HttpMethod: Joi.string().min(3).max(7),
+          Parameters : Joi.string()
         },
       },
     },
@@ -106,6 +114,29 @@ module.exports = [
           id: Joi.string().required(),
         },
       },
+    },
+  },
+  {
+    method: 'GET',
+    path: '/api/procedura/deleteallbrute',
+    handler: (req, h) => {
+      h.type = 'application/json';
+      const Procedura = mongoose.model('Procedura');
+      return new Promise((resolve,reject)=>
+      {
+        Procedura.remove({}, 
+        (err)=>
+        {
+          if(err)
+            reject();
+          else
+            resolve();
+        })
+      }).then(() => h.response().code(200))
+      .catch(() => {
+        throw Boom.badRequest('Unsupported parameter');
+      })
+      
     },
   },
 ];

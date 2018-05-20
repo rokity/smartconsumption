@@ -1,5 +1,3 @@
-
-
 const Hapi = require('hapi');
 const log = require('pino')();
 

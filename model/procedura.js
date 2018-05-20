@@ -2,7 +2,9 @@ var mongoose = require( 'mongoose' );
 
 var proceduraSchema = new mongoose.Schema({
   Name: String,
-  TipoProcedura: Number,
+  Path : String,
+  HttpMethod:String,
+  Parameters : Object,
   CreatedOn: Date,
   Modified: Date,
   Disabled: Boolean
