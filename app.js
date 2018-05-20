@@ -1,33 +1,26 @@
 'use strict';
 
 const Hapi = require('hapi');
+var mongoose = require( 'mongoose' );
 const await = require('await');
-//Configure Logs
 var log = require('pino')()
 
-//Get configuration variable for web server
+//Get configuration variable for web-server
 var _hostname = process.argv[2];
 var _port = process.argv[3];
-
+//Setup configuration variables for web-server
 const server = Hapi.server({
     port: _port,
     host: _hostname
 });
-var mongoose = require( 'mongoose' );
-server.route({
-    method: 'GET',
-    path: '/',
-    handler: async (request, h) => {
-       var Procedura = mongoose.model('Procedura'); 
-       var newProcedura = new Procedura({Name:'Test',TipoProcedura:2,CreatedOn:Date.now(),Modified:Date.now(),Disabled:false});
-       var prom = newProcedura.save();
-       return  prom;
-    }
-});
+
+//Get Routes
+var routes = require('./routes');
+server.route(routes);
 
 //Inizializza il web-server Hapi
 const init = async () => {
-    //Before connect to the Database
+    //Connect to the Database and load Models
     require('./connection')(log);
     //Add Plugin of Hapi 
     await server.register([require('vision'),require('inert'),require('lout')]);
@@ -37,7 +30,6 @@ const init = async () => {
 };
 
 process.on('unhandledRejection', (err) => {
-
     log.error(err);
     process.exit(1);
 });
