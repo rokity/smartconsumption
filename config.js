@@ -4,7 +4,7 @@ var options = {
     port : '29540',
     db : 'smartconsumptions',
     user : 'client',
-    pw : 'ciao'
+    pw : 'ciaoo'
 }
 
 module.exports = `mongodb://${options.user}:${options.pw}@${options.hostname}:${options.port}/${options.db}`;
