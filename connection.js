@@ -1,34 +1,33 @@
-//require mongoose module
-var mongoose = require('mongoose');
-
-//require database URL from properties file
-var dbURL = require('./config');
+// require mongoose module
+const mongoose = require('mongoose');
+const model = require('./model');
+// require database URL from properties file
+const dbURL = require('./config');
 
 /**
  * connection to database
  * @param {Object} log - Pino object of logger
  */
-module.exports =function(log){
+module.exports = (log) => {
+  mongoose.connect(dbURL);
 
-    mongoose.connect(dbURL);
+  mongoose.connection.on('connected', () => {
+    log.info('Mongoose default connection is open ');
+    return model();
+  });
 
-    mongoose.connection.on('connected', function(){
-        log.info("Mongoose default connection is open ");
-        require('./model')();
+  mongoose.connection.on('error', (err) => {
+    log.error(`Mongoose default connection has occured ${err} error`);
+  });
+
+  mongoose.connection.on('disconnected', () => {
+    log.error('Mongoose default connection is disconnected');
+  });
+
+  process.on('SIGINT', () => {
+    mongoose.connection.close(() => {
+      log.error('Mongoose default connection is disconnected due to application termination');
+      process.exit(0);
     });
-
-    mongoose.connection.on('error', function(err){
-        log.error("Mongoose default connection has occured "+err+" error");
-    });
-
-    mongoose.connection.on('disconnected', function(){
-        log.error("Mongoose default connection is disconnected");
-    });
-
-    process.on('SIGINT', function(){
-        mongoose.connection.close(function(){
-            log.error("Mongoose default connection is disconnected due to application termination");
-            process.exit(0)
-        });
-    });
-}
+  });
+};

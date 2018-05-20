@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "it's a RESTFul API for an app ",
   "dependencies": {
-    "await": "^0.2.6",
+    "eslint": "^4.19.1",
     "hapi": "^17.4.0",
     "inert": "^5.1.0",
     "joi": "^13.3.0",
@@ -20,5 +20,9 @@
   "main": "app.js",
   "author": "rokity <riccardo.amadio1@gmail.com>",
   "license": "MIT",
-  "private": true
+  "private": true,
+  "devDependencies": {
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.12.0"
+  }
 }
