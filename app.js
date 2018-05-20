@@ -1,17 +1,41 @@
-const express = require('express')
-const app = express()
+'use strict';
+
+const Hapi = require('hapi');
+const await = require('await');
 //Configure Logs
 var log = require('pino')()
 
-//Configure Swagger-UI Documentation
-var swaggerUi = require('swagger-ui-express');
-var swaggerDocument = require('./swagger.json');
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
-
-app.get('/', (req, res) => res.send('Hello World!'))
-
 //Get configuration variable for web server
-var hostname = process.argv[2];
-var port = process.argv[3];
-//Let's start the webserver
-app.listen(port, hostname, () => log.info(`Example app listening on ${hostname}:${port}!`))
+var _hostname = process.argv[2];
+var _port = process.argv[3];
+
+const server = Hapi.server({
+    port: _port,
+    host: _hostname
+});
+
+server.route({
+    method: 'GET',
+    path: '/',
+    handler: (request, h) => {
+
+        return 'Hello, world!';
+    }
+});
+
+//Inizializza il web-server Hapi
+const init = async () => {
+    //Add Plugin of Hapi 
+    await server.register([require('vision'),require('inert'),require('lout')]);
+    //Let's start the webserver
+    await server.start();
+    log.info(`Server running at: ${server.info.uri}`);
+};
+
+process.on('unhandledRejection', (err) => {
+
+    log.error(err);
+    process.exit(1);
+});
+
+init();

@@ -3,8 +3,13 @@
   "version": "1.0.0",
   "description": "it's a RESTFul API for an app ",
   "dependencies": {
+    "await": "^0.2.6",
+    "hapi": "^17.4.0",
+    "inert": "^5.1.0",
+    "lout": "^11.0.1",
     "nodemon": "^1.17.4",
-    "pino": "^4.16.1"
+    "pino": "^4.16.1",
+    "vision": "^5.3.2"
   },
   "scripts": {
     "dev": "nodemon ./app.js localhost 3000"
