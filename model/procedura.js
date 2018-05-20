@@ -1,13 +1,13 @@
-var mongoose = require( 'mongoose' );
+const mongoose = require('mongoose');
 
-var proceduraSchema = new mongoose.Schema({
+const proceduraSchema = new mongoose.Schema({
   Name: String,
-  Path : String,
-  HttpMethod:String,
-  Parameters : Object,
+  Path: String,
+  HttpMethod: String,
+  Parameters: Object,
   CreatedOn: Date,
   Modified: Date,
-  Disabled: Boolean
+  Disabled: Boolean,
 });
 
-var Procedura = module.exports = mongoose.model('Procedura', proceduraSchema);
+module.exports = mongoose.model('Procedura', proceduraSchema);

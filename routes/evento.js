@@ -1,4 +1,3 @@
-
 const mongoose = require('mongoose');
 const Joi = require('joi');
 const Boom = require('boom');
@@ -6,44 +5,41 @@ const Boom = require('boom');
 module.exports = [
   {
     method: 'POST',
-    path: '/api/procedura/insert',
+    path: '/api/evento/insert',
     handler: (req, h) => {
       h.type = 'application/json';
-      const Procedura = mongoose.model('Procedura');
-      const newProcedura = new Procedura({
-        Name: req.payload.Name,
-        Path: req.payload.Path,
-        HttpMethod: req.payload.HttpMethod,
-        Parameters: req.payload.Parameters,
+      const Evento = mongoose.model('Evento');
+      const newEvento = new Evento({
+        Time: req.payload.Time,
+        TimeZone: req.payload.TimeZone,
+        Procedura: req.payload.Procedura,
         CreatedOn: Date.now(),
         Modified: Date.now(),
         Disabled: false,
       });
-      return newProcedura.save();
+      return newEvento.save();
     },
     options: {
       validate: {
         payload: {
-          Name: Joi.string().min(3).required(),
-          Path: Joi.string().required(),
-          HttpMethod: Joi.string().min(3).max(7).required(),
-          Parameters: Joi.string(),
+          Time: Joi.string().min(5).max(5).required(),
+          TimeZone: Joi.string().required(),
+          Procedura: Joi.string().required(),
         },
       },
     },
   },
   {
     method: 'POST',
-    path: '/api/procedura/update',
+    path: '/api/evento/update',
     handler: (req, h) => new Promise((resolve, reject) => {
-      const Procedura = mongoose.model('Procedura');
-      Procedura.findOneAndUpdate(
+      const Evento = mongoose.model('Evento');
+      Evento.findOneAndUpdate(
         { _id: req.payload.id, Disabled: false },
         {
-          Name: req.payload.Name,
-          Path: req.payload.Path,
-          HttpMethod: req.payload.HttpMethod,
-          Parameters: req.payload.Parameters,
+          Time: req.payload.Time,
+          TimeZone: req.payload.TimeZone,
+          Procedura: req.payload.Procedura,
           Modified: Date.now(),
         }, (err) => {
           if (err) { reject(); } else { resolve(); }
@@ -57,20 +53,19 @@ module.exports = [
       validate: {
         payload: {
           id: Joi.string().required(),
-          Name: Joi.string().min(3),
-          Path: Joi.string(),
-          HttpMethod: Joi.string().min(3).max(7),
-          Parameters: Joi.string(),
+          Time: Joi.string().min(5).max(5),
+          TimeZone: Joi.string(),
+          Procedura: Joi.string(),
         },
       },
     },
   },
   {
     method: 'GET',
-    path: '/api/procedura/delete/{id}',
+    path: '/api/evento/delete/{id}',
     handler: (req, h) => new Promise((resolve, reject) => {
-      const Procedura = mongoose.model('Procedura');
-      Procedura.findOneAndUpdate(
+      const Evento = mongoose.model('Evento');
+      Evento.findOneAndUpdate(
         { _id: req.params.id },
         {
           Disabled: true,
@@ -93,20 +88,20 @@ module.exports = [
   },
   {
     method: 'GET',
-    path: '/api/procedura/getall',
+    path: '/api/evento/getall',
     handler: (req, h) => {
       h.type = 'application/json';
-      const Procedura = mongoose.model('Procedura');
-      return Procedura.find({ Disabled: false }).exec();
+      const Evento = mongoose.model('Evento');
+      return Evento.find({ Disabled: false }).exec();
     },
   },
   {
     method: 'GET',
-    path: '/api/procedura/getbyid/{id}',
+    path: '/api/evento/getbyid/{id}',
     handler: (req, h) => {
       h.type = 'application/json';
-      const Procedura = mongoose.model('Procedura');
-      return Procedura.find({ _id: req.params.id, Disabled: false }).exec();
+      const Evento = mongoose.model('Evento');
+      return Evento.find({ _id: req.params.id, Disabled: false }).exec();
     },
     options: {
       validate: {
@@ -118,12 +113,12 @@ module.exports = [
   },
   {
     method: 'GET',
-    path: '/api/procedura/deleteallbrute',
+    path: '/api/evento/deleteallbrute',
     handler: (req, h) => {
       h.type = 'application/json';
-      const Procedura = mongoose.model('Procedura');
+      const Evento = mongoose.model('Evento');
       return new Promise((resolve, reject) => {
-        Procedura.remove(
+        Evento.remove(
           {},
           (err) => {
             if (err) { reject(); } else { resolve(); }

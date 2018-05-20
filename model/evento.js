@@ -1,12 +1,12 @@
-var mongoose = require( 'mongoose' );
+const mongoose = require('mongoose');
 
-var eventoSchema = new mongoose.Schema({
+const eventoSchema = new mongoose.Schema({
   Time: String,
-  TimeZone : String,
+  TimeZone: String,
   Procedura: String,
   CreatedOn: Date,
   Modified: Date,
-  Disabled: Boolean
+  Disabled: Boolean,
 });
 
-var Evento = module.exports = mongoose.model('Evento', eventoSchema);
+module.exports = mongoose.model('Evento', eventoSchema);
