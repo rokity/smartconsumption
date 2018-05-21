@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
 const Boom = require('boom');
-var jobs = [];
+var CronJob = require('cron').CronJob;
+
+
 module.exports = [
   {
     method: 'POST',
@@ -9,10 +11,17 @@ module.exports = [
     handler: (req, h) => {
       h.type = 'application/json';
       const Evento = mongoose.model('Evento');
-      var tempo = req.payload.Time.split(':');
-      var CronJob = require('cron').CronJob;
+      var tempo = req.payload.Time.split(':');      
+      var idProcedura = req.payload.Procedura;
       var job = new CronJob(`0 ${tempo[1]} ${tempo[0]} * * *`, function() {
-        console.log('You will see this message every second');
+        const Procedura = mongoose.model('Procedura');
+        Procedura.findOne({_id:idProcedura, Disabled: false}).exec(
+        (err,procedura)=>
+        {
+          if(err)   console.error("Non esiste procedura per questo evento");
+          else      procedura.evoca(procedura);
+        }
+        )
       }, null, true, null);
       const newEvento = new Evento({
         Time: req.payload.Time,
@@ -21,7 +30,7 @@ module.exports = [
         Modified: Date.now(),
         Disabled: false,
       });
-      return newEvento.save().then((doc)=>{ console.log(doc);});
+      return newEvento.save();
     },
     options: {
       validate: {

@@ -12,7 +12,9 @@ module.exports = [
       const Procedura = mongoose.model('Procedura');
       const newProcedura = new Procedura({
         Name: req.payload.Name,
-        Path: req.payload.Path,
+        Hostname:req.payload.Hostname,
+        Port:req.payload.Port,
+        Path: req.payload.Path,        
         HttpMethod: req.payload.HttpMethod,
         Parameters: req.payload.Parameters,
         CreatedOn: Date.now(),
@@ -25,6 +27,8 @@ module.exports = [
       validate: {
         payload: {
           Name: Joi.string().min(3).required(),
+          Hostname: Joi.string().min(3).required(),
+          Port: Joi.number().required(),
           Path: Joi.string().required(),
           HttpMethod: Joi.string().min(3).max(7).required(),
           Parameters: Joi.string(),
@@ -41,6 +45,7 @@ module.exports = [
         { _id: req.payload.id, Disabled: false },
         {
           Name: req.payload.Name,
+          Hostname:req.payload.Hostname,
           Path: req.payload.Path,
           HttpMethod: req.payload.HttpMethod,
           Parameters: req.payload.Parameters,
@@ -58,6 +63,8 @@ module.exports = [
         payload: {
           id: Joi.string().required(),
           Name: Joi.string().min(3),
+          Hostname: Joi.string().min(3).required(),
+          Port: Joi.number().required(),
           Path: Joi.string(),
           HttpMethod: Joi.string().min(3).max(7),
           Parameters: Joi.string(),
