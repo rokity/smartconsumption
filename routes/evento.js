@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
 const Boom = require('boom');
-
+var jobs = [];
 module.exports = [
   {
     method: 'POST',
@@ -9,21 +9,24 @@ module.exports = [
     handler: (req, h) => {
       h.type = 'application/json';
       const Evento = mongoose.model('Evento');
+      var tempo = req.payload.Time.split(':');
+      var CronJob = require('cron').CronJob;
+      var job = new CronJob(`0 ${tempo[1]} ${tempo[0]} * * *`, function() {
+        console.log('You will see this message every second');
+      }, null, true, null);
       const newEvento = new Evento({
         Time: req.payload.Time,
-        TimeZone: req.payload.TimeZone,
         Procedura: req.payload.Procedura,
         CreatedOn: Date.now(),
         Modified: Date.now(),
         Disabled: false,
       });
-      return newEvento.save();
+      return newEvento.save().then((doc)=>{ console.log(doc);});
     },
     options: {
       validate: {
         payload: {
           Time: Joi.string().min(5).max(5).required(),
-          TimeZone: Joi.string().required(),
           Procedura: Joi.string().required(),
         },
       },
@@ -38,11 +41,14 @@ module.exports = [
         { _id: req.payload.id, Disabled: false },
         {
           Time: req.payload.Time,
-          TimeZone: req.payload.TimeZone,
           Procedura: req.payload.Procedura,
           Modified: Date.now(),
         }, (err) => {
-          if (err) { reject(); } else { resolve(); }
+          if (err) { reject(); } 
+          else 
+          {
+             resolve(); 
+          }
         },
       );
     }).then(() => h.response().code(200))
@@ -54,7 +60,6 @@ module.exports = [
         payload: {
           id: Joi.string().required(),
           Time: Joi.string().min(5).max(5),
-          TimeZone: Joi.string(),
           Procedura: Joi.string(),
         },
       },
