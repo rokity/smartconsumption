@@ -19,7 +19,15 @@ module.exports = [
         Modified: Date.now(),
         Disabled: false,
       });
-      return newProcedura.save();
+      return newProcedura.save()
+            .then((doc) => 
+            {
+              return h.response(JSON.stringify(doc)).code(200)
+            }) 
+            .catch((err)=> 
+            {
+              return h.response(JSON.stringify(err)).code(400)
+            })
     },
     options: {
       validate: {
@@ -44,14 +52,13 @@ module.exports = [
           Hostname:req.payload.Hostname,
           Path: req.payload.Path,
           Modified: Date.now(),
-        }, (err) => {
-          if (err) { reject(); } else { resolve(); }
+        }, (err,doc) => {
+          if (err) { reject(err); } else { resolve(doc); }
         },
       );
-    }).then(() => h.response().code(200))
-      .catch(() => {
-        throw Boom.badRequest('Unsupported parameter');
-      }),
+    })
+    .then((doc) => h.response(JSON.stringify(doc)).code(200))
+    .catch((err) =>  h.response({error:err}).code(406)),
     options: {
       validate: {
         payload: {
@@ -75,13 +82,11 @@ module.exports = [
           Disabled: true,
           Modified: Date.now(),
         }, (err) => {
-          if (err) { reject(); } else { resolve(); }
+          if (err) { reject(err); } else { resolve(); }
         },
       );
     }).then(() => h.response().code(200))
-      .catch(() => {
-        throw Boom.badRequest('Unsupported parameter');
-      }),
+      .catch((err) => h.response({error:err}).code(406)),
     options: {
       validate: {
         params: {
@@ -125,13 +130,11 @@ module.exports = [
         Procedura.remove(
           {},
           (err) => {
-            if (err) { reject(); } else { resolve(); }
+            if (err) { reject(err); } else { resolve(); }
           },
         );
       }).then(() => h.response().code(200))
-        .catch(() => {
-          throw Boom.badRequest('Unsupported parameter');
-        });
+        .catch(() => h.response({error:err}).code(406));
+    }
     },
-  },
 ];

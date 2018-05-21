@@ -19,7 +19,7 @@ module.exports = [
         Procedura.findOne({_id:idProcedura, Disabled: false}).exec(
         (err,procedura)=>
         {
-          if(err)   console.error("Non esiste procedura per questo evento");
+          if(err)   return h.response(err).code(406);
           else      procedura.evoca(procedura);
         }
         )
@@ -31,12 +31,16 @@ module.exports = [
         Modified: Date.now(),
         Disabled: false,
       });
-      return newEvento.save().then(
-        (doc) => 
-        {
-          jobs[doc._id] = job;
-          return h.response(doc).code(200)
-        });
+      return newEvento.save()
+             .then((doc) => 
+              {
+                jobs[doc._id] = job;
+                return h.response(JSON.stringify(doc)).code(200)
+              })
+              .catch((err)=>
+              {
+                return h.response(JSON.stringify({error:err})).code(400)
+              });
     },
     options: {
       validate: {
@@ -59,7 +63,7 @@ module.exports = [
           Procedura: req.payload.Procedura,
           Modified: Date.now(),
         }, (err,doc) => {
-          if (err) { reject(); } 
+          if (err) { reject(err); } 
           else 
           {
             jobs[doc._id].stop()
@@ -70,7 +74,7 @@ module.exports = [
               Procedura.findOne({_id:idProcedura, Disabled: false}).exec(
               (err,procedura)=>
               {
-                if(err)   console.error("Non esiste procedura per questo evento");
+                if(err)   return h.response(JSON.stringify({error:err})).code(406);
                 else      procedura.evoca(procedura);
               }
               )
@@ -80,9 +84,7 @@ module.exports = [
         },
       );
     }).then(() => h.response().code(200))
-      .catch(() => {
-        throw Boom.badRequest('Unsupported parameter');
-      }),
+      .catch((err) => h.response(JSON.stringify({error:err})).code(406)),
     options: {
       validate: {
         payload: {
@@ -104,16 +106,14 @@ module.exports = [
           Disabled: true,
           Modified: Date.now(),
         }, (err) => {
-          if (err) { reject(); } else { 
+          if (err) { reject(err); } else { 
             jobs[req.params.id].stop()
             jobs[req.params.id] = null;
             resolve(); }
         },
       );
     }).then(() => h.response().code(200))
-      .catch(() => {
-        throw Boom.badRequest('Unsupported parameter');
-      }),
+      .catch((err) => h.response(JSON.stringify({error:err})).code(406)),
     options: {
       validate: {
         params: {
@@ -157,7 +157,7 @@ module.exports = [
         Evento.remove(
           {},
           (err) => {
-            if (err) { reject(); } else 
+            if (err) { reject(err); } else 
             { 
               for(var key in jobs)
                   jobs[key].stop();
@@ -166,9 +166,7 @@ module.exports = [
           },
         );
       }).then(() => h.response().code(200))
-        .catch(() => {
-          throw Boom.badRequest('Unsupported parameter');
-        });
+        .catch(() => h.response(JSON.stringify({error:err})).code(406));
     },
   },
 ];
