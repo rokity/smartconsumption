@@ -61,4 +61,4 @@ typings/
 .next
 
 #configuration database
-config.js
+#config.js
