@@ -3,6 +3,7 @@ const Joi = require('joi');
 const Boom = require('boom');
 var CronJob = require('cron').CronJob;
 
+var jobs = []
 
 module.exports = [
   {
@@ -10,11 +11,11 @@ module.exports = [
     path: '/api/evento/insert',
     handler: (req, h) => {
       h.type = 'application/json';
-      const Evento = mongoose.model('Evento');
+      var Evento = mongoose.model('Evento');
       var tempo = req.payload.Time.split(':');      
       var idProcedura = req.payload.Procedura;
       var job = new CronJob(`0 ${tempo[1]} ${tempo[0]} * * *`, function() {
-        const Procedura = mongoose.model('Procedura');
+        var Procedura = mongoose.model('Procedura');
         Procedura.findOne({_id:idProcedura, Disabled: false}).exec(
         (err,procedura)=>
         {
@@ -23,14 +24,19 @@ module.exports = [
         }
         )
       }, null, true, null);
-      const newEvento = new Evento({
+      var newEvento = new Evento({
         Time: req.payload.Time,
         Procedura: req.payload.Procedura,
         CreatedOn: Date.now(),
         Modified: Date.now(),
         Disabled: false,
       });
-      return newEvento.save();
+      return newEvento.save().then(
+        (doc) => 
+        {
+          jobs[doc._id] = job;
+          return h.response(doc).code(200)
+        });
     },
     options: {
       validate: {
@@ -45,17 +51,30 @@ module.exports = [
     method: 'POST',
     path: '/api/evento/update',
     handler: (req, h) => new Promise((resolve, reject) => {
-      const Evento = mongoose.model('Evento');
+      var Evento = mongoose.model('Evento');
       Evento.findOneAndUpdate(
         { _id: req.payload.id, Disabled: false },
         {
           Time: req.payload.Time,
           Procedura: req.payload.Procedura,
           Modified: Date.now(),
-        }, (err) => {
+        }, (err,doc) => {
           if (err) { reject(); } 
           else 
           {
+            jobs[doc._id].stop()
+            var tempo = req.payload.Time.split(':');      
+            var idProcedura = req.payload.Procedura;
+            jobs[doc._id] = new CronJob(`0 ${tempo[1]} ${tempo[0]} * * *`, function() {
+              var Procedura = mongoose.model('Procedura');
+              Procedura.findOne({_id:idProcedura, Disabled: false}).exec(
+              (err,procedura)=>
+              {
+                if(err)   console.error("Non esiste procedura per questo evento");
+                else      procedura.evoca(procedura);
+              }
+              )
+            }, null, true, null);
              resolve(); 
           }
         },
@@ -78,7 +97,7 @@ module.exports = [
     method: 'GET',
     path: '/api/evento/delete/{id}',
     handler: (req, h) => new Promise((resolve, reject) => {
-      const Evento = mongoose.model('Evento');
+      var Evento = mongoose.model('Evento');
       Evento.findOneAndUpdate(
         { _id: req.params.id },
         {

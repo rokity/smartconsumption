@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const request = require('request');
+const queryString = require('query-string');
 
 
 const proceduraSchema = new mongoose.Schema({
@@ -7,8 +8,6 @@ const proceduraSchema = new mongoose.Schema({
   Hostname:String,
   Port:Number,
   Path: String,
-  HttpMethod: String,
-  Parameters: Object,
   CreatedOn: Date,
   Modified: Date,
   Disabled: Boolean,
@@ -17,24 +16,12 @@ const proceduraSchema = new mongoose.Schema({
 
 proceduraSchema.methods.evoca =  async (procedura) => {
   var url = `http://${procedura.Hostname}:${procedura.Port}${procedura.Path}`;
-  if(procedura.HttpMethod=="GET")
-  {
-    request({url:url, qs:procedura.Parameters}, (err, response, body) =>
+    request({url:url}, (err, response, body) =>
     {
       if(err) { console.log(err); return; }
       console.log("Get response: " + response.statusCode);
       console.log("body",body)
     });
-  }else
-  {
-    request.post(url,procedura.Parameters,(err, response, body) =>
-    {
-      if(err) { console.log(err); return; }
-      console.log("Get response: " + response.statusCode);
-      console.log("body",body)
-    }
-  );
-  }
 }
 
 
