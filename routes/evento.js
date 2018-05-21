@@ -104,7 +104,10 @@ module.exports = [
           Disabled: true,
           Modified: Date.now(),
         }, (err) => {
-          if (err) { reject(); } else { resolve(); }
+          if (err) { reject(); } else { 
+            jobs[req.params.id].stop()
+            jobs[req.params.id] = null;
+            resolve(); }
         },
       );
     }).then(() => h.response().code(200))
@@ -154,7 +157,12 @@ module.exports = [
         Evento.remove(
           {},
           (err) => {
-            if (err) { reject(); } else { resolve(); }
+            if (err) { reject(); } else 
+            { 
+              for(var key in jobs)
+                  jobs[key].stop();
+              resolve(); 
+            }
           },
         );
       }).then(() => h.response().code(200))
