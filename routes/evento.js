@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
-const Boom = require('boom');
 var CronJob = require('cron').CronJob;
 
 var jobs = []
