@@ -51,6 +51,7 @@ module.exports = [
         {
           Name: req.payload.Name,
           Hostname:req.payload.Hostname,
+          Port: req.payload.Port,
           Path: req.payload.Path,
           Modified: Date.now(),
         }, (err,doc) => {
