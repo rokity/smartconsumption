@@ -7,5 +7,8 @@ module.exports = [
             console.log("stocazzo")
             return h.response("ciao").code(200);
         },
+        options:{
+            cors :true,
+        }
       },
 ]

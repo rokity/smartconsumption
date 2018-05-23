@@ -43,6 +43,7 @@ module.exports = [
               });
     },
     options: {
+      cors :true,
       validate: {
         payload: {
           Time: Joi.string().min(5).max(5).required(),
@@ -86,6 +87,7 @@ module.exports = [
     }).then(() => h.response().code(200))
       .catch((err) => h.response(JSON.stringify({error:err})).code(406)),
     options: {
+      cors :true,
       validate: {
         payload: {
           id: Joi.string().required(),
@@ -115,6 +117,7 @@ module.exports = [
     }).then(() => h.response().code(200))
       .catch((err) => h.response(JSON.stringify({error:err})).code(406)),
     options: {
+      cors :true,
       validate: {
         params: {
           id: Joi.string().required(),
@@ -130,6 +133,9 @@ module.exports = [
       const Evento = mongoose.model('Evento');
       return Evento.find({ Disabled: false }).exec();
     },
+    options:{
+      cors :true
+    }
   },
   {
     method: 'GET',
@@ -140,6 +146,7 @@ module.exports = [
       return Evento.find({ _id: req.params.id, Disabled: false }).exec();
     },
     options: {
+      cors :true,
       validate: {
         params: {
           id: Joi.string().required(),
@@ -168,5 +175,8 @@ module.exports = [
       }).then(() => h.response().code(200))
         .catch(() => h.response(JSON.stringify({error:err})).code(406));
     },
+    options:{
+      cors :true,
+    }
   },
 ];

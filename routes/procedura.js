@@ -30,6 +30,7 @@ module.exports = [
             })
     },
     options: {
+      cors :true,
       validate: {
         payload: {
           Name: Joi.string().min(3).required(),
@@ -60,6 +61,7 @@ module.exports = [
     .then((doc) => h.response(JSON.stringify(doc)).code(200))
     .catch((err) =>  h.response({error:err}).code(406)),
     options: {
+      cors :true,
       validate: {
         payload: {
           id: Joi.string().required(),
@@ -88,6 +90,7 @@ module.exports = [
     }).then(() => h.response().code(200))
       .catch((err) => h.response({error:err}).code(406)),
     options: {
+      cors :true,
       validate: {
         params: {
           id: Joi.string().required(),
@@ -103,6 +106,9 @@ module.exports = [
       const Procedura = mongoose.model('Procedura');
       return Procedura.find({ Disabled: false }).exec();
     },
+    options:{
+      cors :true,
+    }
   },
   {
     method: 'GET',
@@ -113,6 +119,7 @@ module.exports = [
       return Procedura.find({ _id: req.params.id, Disabled: false }).exec();
     },
     options: {
+      cors :true,
       validate: {
         params: {
           id: Joi.string().required(),
@@ -135,6 +142,9 @@ module.exports = [
         );
       }).then(() => h.response().code(200))
         .catch(() => h.response({error:err}).code(406));
-    }
     },
+    options:{
+      cors :true,
+    }
+  },
 ];
