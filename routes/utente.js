@@ -10,8 +10,8 @@ module.exports = [
             h.type = 'application/json';
             var Utente = mongoose.model('Utente');
             var newUtente = new Utente({
-                Username: req.payload.username,
-                Password: req.payload.password,
+                Username: req.payload.Username,
+                Password: req.payload.Password,
                 CreatedOn: Date.now(),
                 Modified: Date.now(),
                 Disabled: false,
@@ -24,8 +24,8 @@ module.exports = [
             cors :true,
             validate: {
                 payload: {
-                  username: Joi.string().min(5).required(),
-                  password: Joi.string().min(5).required(),
+                  Username: Joi.string().min(5).required(),
+                  Password: Joi.string().min(5).required(),
                 },
               },
         }
@@ -48,4 +48,24 @@ module.exports = [
               },
         }
       },
+      {
+        method: 'GET',
+        path: '/api/utente/login/{Username}/{Password}',
+        handler: (req, h) => 
+        {
+            h.type = 'application/json';
+            var Utente = mongoose.model('Utente');
+            return Utente.findOne({ Username: req.params.Username,Password:req.params.Password, Disabled: false }).exec();
+        },
+        options:{
+            cors :true,
+            validate: {
+                params: {
+                    Username: Joi.string().min(5).required(),
+                    Password: Joi.string().min(5).required(),
+                },
+              },
+        }
+      },
+      
 ]
