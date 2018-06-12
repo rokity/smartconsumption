@@ -10,7 +10,7 @@ module.exports = [
           var Scheduling = mongoose.model('Scheduling');           
           var newScheduling = new Scheduling({
             Time: req.payload.Time,
-            Dispositivi: req.payload.Dispositivi,
+            Dispositivi: req.payload.Dispositivi.split(","),
             Utente: req.payload.Utente,
             Giorno: req.payload.Giorno,
             CreatedOn: Date.now(),
@@ -32,7 +32,7 @@ module.exports = [
           validate: {
             payload: {
               Time: Joi.string().required(),
-              Dispositivi: Joi.array().items(Joi.string()).required(),
+              Dispositivi: Joi.string().required(),
               Utente: Joi.string().required(),
               Giorno: Joi.string().required()
             },
