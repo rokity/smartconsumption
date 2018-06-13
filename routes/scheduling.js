@@ -7,7 +7,7 @@ module.exports = [
         path: '/api/scheduling/insert',
         handler: (req, h) => {
           h.type = 'application/json';
-          var Scheduling = mongoose.model('Scheduling');           
+          var Scheduling = mongoose.model('Scheduling');   
           var newScheduling = new Scheduling({
             Time: req.payload.Time,
             Dispositivi: req.payload.Dispositivi.split(","),
