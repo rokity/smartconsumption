@@ -30,7 +30,7 @@ module.exports = [
         Modified: Date.now(),
         Disabled: false,
       });
-      return newEvento.save()
+      return Evento.create(newEvento)
              .then((doc) => 
               {
                 jobs[doc._id] = job;

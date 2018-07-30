@@ -18,7 +18,7 @@ module.exports = [
         Modified: Date.now(),
         Disabled: false,
       });
-      return newProcedura.save()
+      return Procedura.create(newProcedura)
             .then((doc) => 
             {
               return h.response(JSON.stringify(doc)).code(200)
