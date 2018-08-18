@@ -9,7 +9,6 @@ module.exports = [{
   handler: (req, h) => {
     if (Token.isAuthenticated(req.payload)) {
       h.type = 'application/json';
-      var utente = "";
       var utente = global.tokens[req.payload.Token].account._id;
       var Dispositivo = mongoose.model('Dispositivo');
       var newDispositivo = new Dispositivo({
