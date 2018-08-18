@@ -23,6 +23,9 @@ const routes = require('./routes');
 
 server.route(routes);
 
+//Token Array
+global.tokens=[]
+
 // Initializie the web-server Hapi
 const init = async () => {
   // Add Plugin of Hapi
