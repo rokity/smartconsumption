@@ -9,7 +9,7 @@ const dbURL = require('./config');
  * @param {Object} log - Pino object of logger
  */
 module.exports = (log) => {
-  mongoose.connect(dbURL);
+  mongoose.connect(dbURL,{ useNewUrlParser: true });
 
   mongoose.connection.on('connected', () => {
     log.info('Mongoose default connection is open ');
