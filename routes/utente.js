@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Joi = require('joi');
 var Boom = require('boom')
 var Token = require('./../token');
+var moment = require('moment')
 
 module.exports = [{
         method: 'POST',
@@ -19,10 +20,13 @@ module.exports = [{
             return newUtente.save()
                 .then((doc) => {
                     return Token.tokenGenerator().then((value) => {
-                        global.tokens[value] = {
+                        var expireDate = Token.expireDateGenerator()
+                        var now = moment()
+                        var diff = moment.duration(expireDate.diff(now)).asSeconds().toFixed();
+                        global.clientRedis.set(value, JSON.stringify({
                             account: utente,
-                            expireDate: Token.expireDateGenerator()
-                        };
+                            expireDate: expireDate.toString()
+                        }), 'EX', diff)
                         return h.response(JSON.stringify({
                             token: value
                         })).code(200)
@@ -48,16 +52,19 @@ module.exports = [{
         method: 'GET',
         path: '/api/utente/getusername/{token}',
         handler: (req, h) => {
-            if (Token.isAuthenticated(req.params)) {
-                h.type = 'application/json';
-                var Utente = mongoose.model('Utente');
-                var id = global.tokens[req.params.token].account._id;
-                return Utente.find({
-                    _id: id,
-                    Disabled: false
-                }, 'Username').exec();
-            } else
-                throw Boom.notFound('Cannot find the requested page')
+            return Token.isAuthenticated(req.params).then(isAuthenticated => {
+                if (typeof(isAuthenticated)=="object") {
+                    h.type = 'application/json';
+                    var Utente = mongoose.model('Utente');
+                            return (Utente.find({
+                                _id: isAuthenticated.account._id,
+                                Disabled: false
+                            }, 'Username').exec());
+
+                } else
+                    throw Boom.notFound('Cannot find the requested page')
+            });
+
         },
         options: {
             cors: true,
@@ -83,10 +90,13 @@ module.exports = [{
                 .then((utente) => {
                     if (utente != null) {
                         return Token.tokenGenerator().then((value) => {
-                            global.tokens[value] = {
+                            var expireDate = Token.expireDateGenerator()
+                            var now = moment()
+                            var diff = moment.duration(expireDate.diff(now)).asSeconds().toFixed();
+                            global.clientRedis.set(value, JSON.stringify({
                                 account: utente,
-                                expireDate: Token.expireDateGenerator()
-                            };
+                                expireDate: expireDate.toString()
+                            }), 'EX', diff)
                             return h.response(JSON.stringify({
                                 token: value
                             })).code(200)

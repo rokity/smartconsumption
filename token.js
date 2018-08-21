@@ -16,16 +16,22 @@ module.exports.expireDateGenerator = () => {
 }
 
 module.exports.isAuthenticated = (params) => {
-    //TODO: move token presence under BAD REQUEST response
-    var token = global.tokens[params.token];
-    if (token == undefined) {
-        return false;
-    } else {
-        var expireDate = token.expireDate;
-        var date = moment();
-        if (moment(date).isAfter(expireDate))
-            return false
-        else
-            return true;
-    }
+    return new Promise((resolve, reject) => {
+        global.clientRedis.get(params.token, (err, reply) => {
+            reply = JSON.parse(reply)
+            if (reply == undefined) {
+                resolve(false)
+            } else {
+                var expireDate = moment(new Date(reply.expireDate));
+                var date = moment();
+                if (moment(date).isAfter(expireDate)) {
+                    resolve(false)
+                } else {
+                    resolve(reply)
+                }
+
+            }
+        })
+    })
+
 }

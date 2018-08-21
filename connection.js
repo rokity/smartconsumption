@@ -9,7 +9,9 @@ const dbURL = require('./config');
  * @param {Object} log - Pino object of logger
  */
 module.exports = (log) => {
-  mongoose.connect(dbURL,{ useNewUrlParser: true });
+  mongoose.connect(dbURL, {
+    useNewUrlParser: true
+  });
 
   mongoose.connection.on('connected', () => {
     log.info('Mongoose default connection is open ');
@@ -31,3 +33,14 @@ module.exports = (log) => {
     });
   });
 };
+
+
+/**
+ * REDIS CONNECTION
+ */
+var redis = require("redis");
+global.clientRedis = redis.createClient(6379);
+
+global.clientRedis.on("error", function (err) {
+  console.log("Error " + err);
+});
