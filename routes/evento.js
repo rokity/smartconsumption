@@ -108,8 +108,9 @@ module.exports = [
           Modified: Date.now(),
         }, (err) => {
           if (err) { reject(err); } else { 
-            jobs[req.params.id].stop()
-            jobs[req.params.id] = null;
+            if(jobs[req.params.id]!=undefined)
+            {jobs[req.params.id].stop()
+            jobs[req.params.id] = null;}
             resolve(); }
         },
       );
