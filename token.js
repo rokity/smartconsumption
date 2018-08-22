@@ -15,9 +15,9 @@ module.exports.expireDateGenerator = () => {
     return data;
 }
 
-module.exports.isAuthenticated = (params) => {
+module.exports.isAuthenticated = (token) => {
     return new Promise((resolve, reject) => {
-        global.clientRedis.get(params.token, (err, reply) => {
+        global.clientRedis.get(token, (err, reply) => {
             reply = JSON.parse(reply)
             if (reply == undefined) {
                 resolve(false)

@@ -52,7 +52,7 @@ module.exports = [{
         method: 'GET',
         path: '/api/utente/getusername/{token}',
         handler: (req, h) => {
-            return Token.isAuthenticated(req.params).then(isAuthenticated => {
+            return Token.isAuthenticated(req.params.token).then(isAuthenticated => {
                 if (typeof(isAuthenticated)=="object") {
                     h.type = 'application/json';
                     var Utente = mongoose.model('Utente');

@@ -7,8 +7,8 @@ module.exports = [{
     method: 'POST',
     path: '/api/dispositivo/insert',
     handler: (req, h) => {
-      return Token.isAuthenticated(req.payload).then(isAuthenticated => {
-        if (typeof (isAuthenticated) == object) {
+      return Token.isAuthenticated(req.payload.Token).then(isAuthenticated => {
+        if (typeof (isAuthenticated) == "object") {
           h.type = 'application/json';
           var utente = isAuthenticated.account._id;
           var Dispositivo = mongoose.model('Dispositivo');
@@ -50,7 +50,7 @@ module.exports = [{
     path: '/api/dispositivo/update',
     handler: (req, h) => {
       return new Promise((resolve, reject) => {
-          return Token.isAuthenticated(req.payload).then(isAuthenticated => {
+          return Token.isAuthenticated(req.payload.TOken).then(isAuthenticated => {
             if (typeof (isAuthenticated) == "object") {
               h.type = 'application/json';
               var utente = isAuthenticated.account._id;
@@ -97,7 +97,7 @@ module.exports = [{
     method: 'GET',
     path: '/api/dispositivo/delete/{id}/{Token}',
     handler: (req, h) => new Promise((resolve, reject) => {
-        return Token.isAuthenticated(req.params).then(isAuthenticated => {
+        return Token.isAuthenticated(req.params.Token).then(isAuthenticated => {
           if (typeof (isAuthenticated) == "object") {
             var utente = isAuthenticated.account._id;
             var Dispositivo = mongoose.model('Dispositivo');
@@ -168,7 +168,7 @@ module.exports = [{
     method: 'GET',
     path: '/api/dispositivo/getdispositivibyutente/{Token}',
     handler: (req, h) => {
-      return Token.isAuthenticated(req.params).then(isAuthenticated => {
+      return Token.isAuthenticated(req.params.Token).then(isAuthenticated => {
         if (typeof (isAuthenticated) == "object") {
           h.type = 'application/json';
           const Dispositivo = mongoose.model('Dispositivo');

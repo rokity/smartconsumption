@@ -5,7 +5,7 @@ module.exports = [{
     method: 'POST',
     path: '/api/scheduling/insert',
     handler: (req, h) => {
-      return Token.isAuthenticated(req.payload).then(isAuthenticated => {
+      return Token.isAuthenticated(req.payload.Token).then(isAuthenticated => {
         if (typeof (isAuthenticated) == "object") {
           h.type = 'application/json';
           var Scheduling = mongoose.model('Scheduling');
@@ -48,7 +48,7 @@ module.exports = [{
     method: 'POST',
     path: '/api/scheduling/update',
     handler: (req, h) => {
-      return Token.isAuthenticated(req.payload).then(isAuthenticated => {
+      return Token.isAuthenticated(req.payload.Token).then(isAuthenticated => {
         if (typeof (isAuthenticated) == "object") {
           h.type = 'application/json';
           var Scheduling = mongoose.model('Scheduling');
