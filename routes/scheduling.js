@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
+const Token = require('./../token');
 
 module.exports = [{
     method: 'POST',
