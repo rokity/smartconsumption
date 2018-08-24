@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Joi = require('joi');
 const Token = require('./../token');
 var Boom = require('boom')
+var moment = require('moment')
 
 module.exports = [{
     method: 'POST',
@@ -50,13 +51,13 @@ module.exports = [{
     path: '/api/dispositivo/update',
     handler: (req, h) => {
       return new Promise((resolve, reject) => {
-          return Token.isAuthenticated(req.payload.TOken).then(isAuthenticated => {
+          return Token.isAuthenticated(req.payload.Token).then(isAuthenticated => {
             if (typeof (isAuthenticated) == "object") {
               h.type = 'application/json';
               var utente = isAuthenticated.account._id;
               var Dispositivo = mongoose.model('Dispositivo');
-              Dispositivo.findOneAndUpdate({
-                _id: req.payload.id,
+              Dispositivo.updateOne({
+                _id: req.payload.Id,
                 Utente: utente,
                 Disabled: false
               }, {
@@ -64,18 +65,18 @@ module.exports = [{
                 Consumo: req.payload.Consumo,
                 Modified: Date.now(),
               }, (err, doc) => {
-
+                console.log(doc)
                 if (err) return h.response(JSON.stringify({
                   error: err
                 })).code(406);
-                else resolve();
+                else resolve(doc);
               });
             } else
               throw Boom.notFound('Cannot find the requested page')
           })
 
         })
-        .then(() => h.response().code(200))
+        .then((doc) => h.response(doc).code(200))
         .catch((err) => h.response(JSON.stringify({
           error: err
         })).code(406))
@@ -85,7 +86,7 @@ module.exports = [{
       cors: true,
       validate: {
         payload: {
-          id: Joi.strict().required(),
+          Id: Joi.strict().required(),
           Name: Joi.string().required(),
           Consumo: Joi.string().required(),
           Token: Joi.string().required(),
@@ -101,7 +102,7 @@ module.exports = [{
           if (typeof (isAuthenticated) == "object") {
             var utente = isAuthenticated.account._id;
             var Dispositivo = mongoose.model('Dispositivo');
-            Dispositivo.findOneAndUpdate({
+            Dispositivo.updateOne({
               _id: req.params.id,
               Utente: utente
             }, {
@@ -110,8 +111,29 @@ module.exports = [{
             }, (err) => {
               if (err)
                 reject(err);
-              else
+              else {
+                var Scheduling = mongoose.model('Scheduling');
+                var today = moment().format('MM/DD/YYYY');
+                Scheduling.find({
+                    Utente: utente,
+                    Giorno: today
+                  }).exec()
+                  .then((schemi) => {
+                    for (var i = 0; i < schemi.length; i++) {
+                      if (schemi[i].Dispositivi.includes(req.params.id)) {
+                        var index = schemi[i].Dispositivi.indexOf(req.params.id);
+                        schemi[i].Dispositivi.splice(index, 1)
+                        Scheduling.updateOne({
+                          _id: schemi[i]._id
+                        }, {
+                          Dispositivi: schemi[i].Dispositivi
+                        }).exec()
+                      }
+                    }
+                  })
                 resolve();
+              }
+
             });
           } else
             throw Boom.notFound('Cannot find the requested page')
