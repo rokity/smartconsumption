@@ -5,6 +5,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 yarn.lock
+input_consumption.csv
+output_script.csv
 # Runtime data
 pids
 *.pid
