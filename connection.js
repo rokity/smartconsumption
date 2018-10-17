@@ -27,7 +27,7 @@ module.exports = () => {
 
   mongoose.connection.once('open', function () {
     //Connesso
-    logService();
+    //logService();
   });
 
   process.on('SIGINT', () => {

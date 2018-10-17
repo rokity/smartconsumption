@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Admin SmartConsumption</title>
+    <!-- <link rel="stylesheet" type="text/css" href="./style.css"> -->
+    <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.min.css">
+
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-md bg-dark navbar-dark">
+        <a class="navbar-brand" href="#">Admin SmartConsumption</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="collapsibleNavbar">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" onclick="mostraEventi()">Mostra tutti gli eventi</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="mostraProcedure()">Mostra tutte le procedure</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="inserisciProcedura()">Inserisci Nuova Procedura</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="inserisciEvento()">Inserisci Nuovo Evento</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <!-- <div class="container">
+        <div class="row" style="padding-top:20px;">
+            <div class="col-sm" style="padding: 15px;">
+                <button type="button" class="btn btn-dark" onclick="mostraEventi()">Mostra tutti gli eventi</button>
+            </div>
+            <div class="col-sm" style="padding: 15px;">
+                <button type="button" class="btn btn-dark" onclick="mostraProcedure()">Mostra tutte le procedure</button>
+            </div>
+            <div class="col-sm" style="padding: 15px;">
+                <button type="button" class="btn btn-dark" onclick="inserisciProcedura()">Inserisci Nuova Procedura</button>
+            </div>
+            <div class="col-sm" style="padding: 15px;">
+                <button type="button" class="btn btn-dark" onclick="inserisciEvento()">Inserisci Nuovo Evento</button>
+            </div>
+        </div>
+    </div> -->
+    <!-- <div class="inline distanzia">
+        <button onclick="mostraEventi()">Mostra tutti gli eventi</button>
+        <button onclick="mostraProcedure()">Mostra tutte le procedure</button>
+        <button onclick="inserisciProcedura()">Inserisci Nuova Procedura</button>
+        <button onclick="inserisciEvento()">Inserisci Nuovo Evento</button>
+    </div> -->
+    <div class="container ">
+        <form id="inserisciProcedura" action="" method="post" class="d-none">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" class="form-control" name="Name" id="name">
+            </div>
+            <div class="form-group">
+                <label for="hostname">Hostname</label>
+                <input type="text" class="form-control" name="Hostname" id="hostname">
+            </div>
+            <div class="form-group">
+                <label for="port">Port</label>
+                <input type="number" class="form-control" name="Port" id="port">
+            </div>
+            <div class="form-group">
+                <label for="path">Path</label>
+                <input type="text" class="form-control" name="Path" id="path">
+            </div>
+            <div class="form-group">
+                <button id="submitProcedura" class="btn btn-success" onclick="salvaProcedura()">Salva</button>
+                <button class="btn btn-secondary" onclick="annullaInsertProcedura()">Annulla</button>
+            </div>
+        </form>
+        <div id="proceduraTable" class="table-responsive d-none">
+            <table class="table ">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Hostname</th>
+                        <th scope="col">Port</th>
+                        <th scope="col">Path</th>
+                        <th scope="col">Operazioni</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+        <form id="inserisciEvento" action="" method="post" class="d-none">
+            <div class="form-group">
+                <label for="time">Time</label>
+                <input type="time" class="form-control" name="Time" id="time">
+            </div>
+
+            <div class="form-group">
+                <label for="proceduraSelector">Procedura</label>
+                <select name="Procedura" class="form-control" id="proceduraSelector"></select>
+            </div>
+
+            <div class="form-group">
+                <button id="submitEvento" class="btn btn-success" onclick="salvaEvento()">Salva</button>
+                <button class="btn btn-secondary" onclick="annullaInsertEvento()">Annulla</button>
+            </div>
+        </form>
+        <div id="eventoTable" class="table-responsive d-none">
+            <table id="eventoTable" class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Time</th>
+                        <th scope="col">Procedura</th>
+                        <th scope="col">Operazioni</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+
+
+</body>
+<script src="/node_modules/babel-standalone/babel.min.js"></script>
+<script src="/node_modules/jquery/dist/jquery.slim.min.js"></script>
+<script src="/node_modules/popper.js/dist/umd/popper.min.js"></script>
+<script src="/node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+<script>
+    // var hostname = "https://smartconsuption-scpqskirfr.now.sh"
+    var hostname = "http://localhost:3000"
+</script>
+<script src="js/getEventi.js"></script>
+<script src="js/getProcedure.js"></script>
+<script src="js/insertProcedura.js"></script>
+<script src="js/insertEvento.js"></script>
+
+
+</html>
