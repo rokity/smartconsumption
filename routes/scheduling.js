@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Joi = require('joi');
 const Token = require('./../token');
 const moment = require('moment')
+
 module.exports = [{
   method: 'POST',
   path: '/api/scheduling/insert',
@@ -144,11 +145,8 @@ module.exports = [{
           return new Promise(resolve => {
             for (var i = 0; i < schemes.length; i++) {
               if (schemes[i].Dispositivi.length > 0 && schemes[i].Dispositivi[req.params.IndexDispositivo] != undefined) {
-                console.log("schema", schemes[i])
                 var disp = schemes[i]['Dispositivi'];
-                console.log("schema", disp)
                 disp.splice(req.params.IndexDispositivo, 1);
-                console.log("schema", disp)
                 return Scheduling.updateOne({
                   _id: schemes[i]._id,
                   Utente: utente,

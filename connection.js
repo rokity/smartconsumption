@@ -2,33 +2,37 @@
 const mongoose = require('mongoose');
 const model = require('./model');
 // require database URL from properties file
-const dbURL = require('./config');
+const config = require('./config');
 
 /**
  * connection to database
- * @param {Object} log - Pino object of logger
  */
-module.exports = (log) => {
-  mongoose.connect(dbURL, {
+module.exports = () => {
+  mongoose.connect(config.mongodb, {
     useNewUrlParser: true
   });
 
   mongoose.connection.on('connected', () => {
-    log.info('Mongoose default connection is open ');
+    console.log('Mongoose default connection is open ');
     return model();
   });
 
   mongoose.connection.on('error', (err) => {
-    log.error(`Mongoose default connection has occured ${err} error`);
+    console.error(`Mongoose default connection has occured ${err} error`);
   });
 
   mongoose.connection.on('disconnected', () => {
-    log.error('Mongoose default connection is disconnected');
+    console.error('Mongoose default connection is disconnected');
+  });
+
+  mongoose.connection.once('open', function () {
+    //Connesso
+    logService();
   });
 
   process.on('SIGINT', () => {
     mongoose.connection.close(() => {
-      log.error('Mongoose default connection is disconnected due to application termination');
+      console.error('Mongoose default connection is disconnected due to application termination');
       process.exit(0);
     });
   });
@@ -39,8 +43,50 @@ module.exports = (log) => {
  * REDIS CONNECTION
  */
 var redis = require("redis");
-global.clientRedis = redis.createClient(6379);
-
+global.clientRedis = redis.createClient({port:config.redis.port,host:config.redis.host});
+global.clientRedis.auth(config.redis.pw);
 global.clientRedis.on("error", function (err) {
   console.log("Error " + err);
 });
+
+
+//Override console log
+var logService = () => {
+  var mongoose = require('mongoose');
+  var Log = mongoose.model('Log');
+  var originalConsole = console;
+  console = {}
+  console.log = function()  {
+    var newLog = new Log({
+      Tipo: "log",
+      Value: arguments,
+      CreatedOn: Date.now(),
+    });
+    return newLog.save();
+  }
+  console.info = function(){
+    var newLog = new Log({
+      Tipo: "info",
+      Value: arguments,
+      CreatedOn: Date.now(),
+    });
+    return newLog.save();
+  }
+  console.warn = function() {
+    var newLog = new Log({
+      Tipo: "warn",
+      Value: arguments,
+      CreatedOn: Date.now(),
+    });
+    return newLog.save();
+  }
+  console.error = function() {
+    var newLog = new Log({
+      Tipo: "info",
+      Value: arguments,
+      CreatedOn: Date.now(),
+    });
+    return newLog.save();
+  }
+
+}

@@ -1,5 +1,4 @@
 const Hapi = require('hapi');
-const log = require('pino')();
 
 // Plugin Hapi
 const vision = require('vision');
@@ -14,9 +13,8 @@ const server = Hapi.server({
   port: portParameter,
   host: hostnameParameter,
 });
-
 // Connect to the Database and load Models
-require('./connection')(log);
+require('./connection')()
 
 // Get Routes Configuration and Load on web-server
 const routes = require('./routes');
@@ -24,7 +22,7 @@ const routes = require('./routes');
 server.route(routes);
 
 //Token Array
-global.tokens=[]
+global.tokens = []
 
 // Initializie the web-server Hapi
 const init = async () => {
@@ -32,12 +30,14 @@ const init = async () => {
   await server.register([vision, inert, lout]);
   // Let's start the webserver
   await server.start();
-  log.info(`Server running at: ${server.info.uri}`);
+  console.log(`Server running at: ${server.info.uri}`);
 };
 // If web-server crash
 process.on('unhandledRejection', (err) => {
-  log.error(err);
+  console.error(err);
   process.exit(1);
 });
 // Launch the web-server
 init();
+
+

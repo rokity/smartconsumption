@@ -24,7 +24,7 @@ module.exports = [{
                         var now = moment()
                         var diff = moment.duration(expireDate.diff(now)).asSeconds().toFixed();
                         global.clientRedis.set(value, JSON.stringify({
-                            account: utente,
+                            account: doc,
                             expireDate: expireDate.toString()
                         }), 'EX', diff)
                         return h.response(JSON.stringify({
