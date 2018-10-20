@@ -8,13 +8,16 @@ const lout = require('lout');
 // Get configuration parameters for web-server
 const hostnameParameter = process.argv[2];
 const portParameter = process.argv[3];
+var logOnDatabase = false;
+if(process.argv[4]!=null)
+  logOnDatabase=true;
 // Setup configuration variables for web-server
 const server = Hapi.server({
   port: portParameter,
   host: hostnameParameter,
 });
 // Connect to the Database and load Models
-require('./connection')()
+require('./connection')(logOnDatabase)
 
 // Get Routes Configuration and Load on web-server
 const routes = require('./routes');

@@ -7,7 +7,7 @@ const config = require('./config');
 /**
  * connection to database
  */
-module.exports = () => {
+module.exports = (enableLogOnDatabase) => {
   mongoose.connect(config.mongodb, {
     useNewUrlParser: true
   });
@@ -27,7 +27,8 @@ module.exports = () => {
 
   mongoose.connection.once('open', function () {
     //Connesso
-    //logService();
+    if (enableLogOnDatabase == true)
+      logService();
   });
 
   process.on('SIGINT', () => {
@@ -43,7 +44,10 @@ module.exports = () => {
  * REDIS CONNECTION
  */
 var redis = require("redis");
-global.clientRedis = redis.createClient({port:config.redis.port,host:config.redis.host});
+global.clientRedis = redis.createClient({
+  port: config.redis.port,
+  host: config.redis.host
+});
 global.clientRedis.auth(config.redis.pw);
 global.clientRedis.on("error", function (err) {
   console.log("Error " + err);
@@ -56,7 +60,7 @@ var logService = () => {
   var Log = mongoose.model('Log');
   var originalConsole = console;
   console = {}
-  console.log = function()  {
+  console.log = function () {
     var newLog = new Log({
       Tipo: "log",
       Value: arguments,
@@ -64,7 +68,7 @@ var logService = () => {
     });
     return newLog.save();
   }
-  console.info = function(){
+  console.info = function () {
     var newLog = new Log({
       Tipo: "info",
       Value: arguments,
@@ -72,7 +76,7 @@ var logService = () => {
     });
     return newLog.save();
   }
-  console.warn = function() {
+  console.warn = function () {
     var newLog = new Log({
       Tipo: "warn",
       Value: arguments,
@@ -80,7 +84,7 @@ var logService = () => {
     });
     return newLog.save();
   }
-  console.error = function() {
+  console.error = function () {
     var newLog = new Log({
       Tipo: "info",
       Value: arguments,

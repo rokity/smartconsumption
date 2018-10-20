@@ -13,12 +13,7 @@ var mostraProcedure = () => {
                 var tbody = container.querySelectorAll('tbody')[0];
                 container.removeChild(tbody);
                 tbody = document.createElement("tbody");
-                container.appendChild(tbody)
-                // tbody.querySelectorAll("tr").forEach(
-                //     (item, index, array) => {
-                //         if (index != 0)
-                //             container.removeChild(item)
-                //     })
+                container.appendChild(tbody)                
                 //Inserisco elementi nella tabella
                 data.forEach((item, index, array) => {
                     var tr = document.createElement("tr");
@@ -135,13 +130,13 @@ var evocaEvento = (id) => {
                 var url = `http://${data[0].Hostname}:${data[0].Port}/${data[0].Path}`
             else
                 var url = `http://${data[0].Hostname}/${data[0].Path}`
-
+            $(".modal").modal();
             fetch(url)
                 .catch((error) => console.error(error))
                 .then((res) => res.text())
                 .then((data) => {
                     console.info(data);
-                    alert("Procedura Riuscita!");
+                    $(".modal").modal('hide');
                 });
         });
 }

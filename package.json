@@ -24,7 +24,7 @@
   "scripts": {
     "postinstall": "./setup.py",
     "dev": "nodemon ./app.js localhost 3000",
-    "start": "node ./app.js 0.0.0.0 80"
+    "start": "node ./app.js 0.0.0.0 80 logOnDatabase"
   },
   "main": "app.js",
   "author": "rokity <riccardo.amadio1@gmail.com>",
